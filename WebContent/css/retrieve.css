@@ -1,0 +1,21 @@
+@CHARSET "UTF-8";
+
+div { margin: auto; width: 640px; }
+div > h1 { text-align: center; }
+input { padding: 5px; width: 24.3%; }
+table { margin-bottom: 10px; width: 100%; }
+td { border-radius: 5px; border: black solid 1px; width: 10%; }
+table > tbody > tr:NTH-CHILD(2) > td:LAST-CHILD { width: 20%; }
+.pageContent { padding: 10px; }
+
+.updateForm {
+	width: 97%;
+    padding: 5px;
+    border-radius: 5px;
+    border: 0;
+}
+.notUpdateForm{
+	background-color: rgb(230,230,230); 
+	color: rgb(100,100,100);
+}
+form > div > input { width: 49%; }
