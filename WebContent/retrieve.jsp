@@ -39,7 +39,7 @@
 			<INPUT type="button" value="목록" onclick="location.href='list.do'"/>
 			<INPUT type="button" value="수정" onclick="location.href='updateUI.do?num=${dto.num}'"/>
 			<INPUT type="button" value="삭제" onclick="location.href='delete.do?num=${dto.num}'"/>
-			<INPUT type="button" value="댓글" onclick="location.href='replyUI.do?num=${dto.num}'"/>
+			<INPUT type="button" value="답글" onclick="location.href='replyUI.do?num=${dto.num}'"/>
 		</c:if>
 		<c:if test="${ dto == null }">
 			잘못된 접근입니다.

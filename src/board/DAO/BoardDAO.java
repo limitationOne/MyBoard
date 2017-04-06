@@ -4,9 +4,7 @@ import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
@@ -33,7 +31,7 @@ public class BoardDAO {
 		
 		ArrayList<BoardDTO> list = new ArrayList<BoardDTO>();
 		String sql = "select num,title,author,writeday,readcnt,repRoot,repStep,repIndent "
-				+ "from (select * from myboard order by writeday desc)";
+				+ "from (select * from myboard order by repRoot desc, repStep asc)";
 		
 		Connection conn = null;
 		PreparedStatement pstmt = null;
@@ -65,7 +63,7 @@ public class BoardDAO {
 	}
 	
 	// 글쓰기
-	public void write(String author, String title, String content, int repRoot){
+	public void write(String author, String title, String content){
 		System.out.println("write()");
 		
 		// index, 글쓴이, 제목, 내용, 날짜, 조회수, 원래글과 댓글을 붙어있게 하기 위한 정보, 댓글에 대한 순서 지정을 위한 컬럼, 들여쓰기정보
@@ -87,7 +85,7 @@ public class BoardDAO {
 			pstmt.setString(2, author);
 			pstmt.setString(3, title);
 			pstmt.setString(4, content);
-			pstmt.setInt(5, repRoot);
+			pstmt.setInt(5, num);
 			
 			pstmt.executeUpdate();
 			
@@ -267,6 +265,108 @@ public class BoardDAO {
 			closeAll(rs, null, pstmt, conn);
 		}
 		return list;
+	}
+	
+	// 답글 작성 UI
+	public BoardDTO replyUI(int num) {
+		System.out.println("replyUI");
+		
+		BoardDTO dto = null;
+		String sql = "select * from myboard where num=?";
+		
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		
+		try {
+			conn = dataFactiory.getConnection();
+			pstmt = conn.prepareStatement(sql);
+			
+			pstmt.setInt(1, num);
+			
+			rs = pstmt.executeQuery();
+			
+			if (rs.next()) {
+				dto = new BoardDTO(rs.getInt("num"), 
+						rs.getString("author"), 
+						rs.getString("title"), 
+						rs.getString("content"), 
+						rs.getString("writeday"), 
+						rs.getInt("readcnt"), 
+						rs.getInt("repRoot"), 
+						rs.getInt("repStep"), 
+						rs.getInt("repIndent"));
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			closeAll(rs, null, pstmt, conn);
+		}
+		return dto;
+	}
+	
+	// 답글 작성
+	public int reply(String author, String title, String content, int repRoot, int repStep, int repIndent){
+		System.out.println("reply()");
+		
+		// index, 글쓴이, 제목, 내용, 날짜, 조회수, 
+		// 원래글과 댓글을 붙어있게 하기 위한 정보, 댓글에 대한 순서 지정을 위한 컬럼, 들여쓰기정보
+		int num = -1;
+		if((num = makeNum()+1) == 0) return -1;
+		
+		String sql = "insert into myBoard (num,author,title,content,"
+				+ "readcnt,repRoot,repStep,repIndent) "
+				+ "values (?,?,?,?, 0,?,?,?)";
+		
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		
+		try {
+			conn = dataFactiory.getConnection();
+			pstmt = conn.prepareStatement(sql);
+			
+			pstmt.setInt(1, num);
+			pstmt.setString(2, author);
+			pstmt.setString(3, title);
+			pstmt.setString(4, content);
+			pstmt.setInt(5, repRoot);
+			pstmt.setInt(6, repStepNum(repRoot));
+			pstmt.setInt(7, repIndent+1);
+			
+			pstmt.executeUpdate();
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			closeAll(null, null, pstmt, conn);
+		}
+		return num;
+	}
+	
+	// 답글 순서
+	private int	repStepNum(int repRoot){
+		String sql = "select max(repStep) from myboard where repRoot=?";
+		
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		
+		try {
+			conn = dataFactiory.getConnection();
+			pstmt = conn.prepareStatement(sql);
+			
+			pstmt.setInt(1, repRoot);
+			
+			rs = pstmt.executeQuery();
+			
+			if(rs.next()) return rs.getInt(1) + 1;
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			closeAll(rs, null, pstmt, conn);
+		}
+		return -1;
 	}
 	
 	private int makeNum(){

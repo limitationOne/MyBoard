@@ -18,8 +18,7 @@ public class BoardWriteCommand implements BoardCommand {
 		BoardDAO.getDao().write(
 				request.getParameter("author"), 
 				request.getParameter("title"), 
-				request.getParameter("content"), 
-				Integer.parseInt(request.getParameter("repRoot")));
+				request.getParameter("content"));
 		
 		return new ActionForward(true, "list.do");
 	}

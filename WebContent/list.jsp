@@ -26,16 +26,16 @@
 				</TR>
 			</THEAD>
 			<TBODY>
-				<c:forEach items="${ list }" var="boardTitle">
+				<c:forEach items="${ list }" var="boardDTO">
 					<TR>
-						<TD><A href="retrieve.do?num=${ boardTitle.num }">${ boardTitle.num }</A></TD>
-						<TD><A href="retrieve.do?num=${ boardTitle.num }">${ boardTitle.title }</A></TD>
-						<TD><A href="">${ boardTitle.author }</A></TD>
-						<TD>${ boardTitle.writeday }</TD>
-						<TD>${ boardTitle.readcnt }</TD>
-						<TD>${ boardTitle.repRoot }</TD>
-						<TD>${ boardTitle.repStep }</TD>
-						<TD>${ boardTitle.repIndent }</TD>
+						<TD><A href="retrieve.do?num=${ boardDTO.num }">${ boardDTO.num }</A></TD>
+						<TD><A href="retrieve.do?num=${ boardDTO.num }">${ boardDTO.title }</A></TD>
+						<TD><A href="">${ boardDTO.author }</A></TD>
+						<TD>${ boardDTO.writeday }</TD>
+						<TD>${ boardDTO.readcnt }</TD>
+						<TD>${ boardDTO.repRoot }</TD>
+						<TD>${ boardDTO.repStep }</TD>
+						<TD>${ boardDTO.repIndent }</TD>
 					</TR>
 				</c:forEach>
 			</TBODY>

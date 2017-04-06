@@ -26,6 +26,18 @@ public class BoardDTO {
 	}
 	
 	public BoardDTO(int num, String author, String title, String content, 
+			int repRoot, int repStep, int repIndent) {
+		super();
+		this.num = num;
+		this.author = author;
+		this.title = title;
+		this.content = content;
+		this.repRoot = repRoot;
+		this.repStep = repStep;
+		this.repIndent = repIndent;
+	}
+	
+	public BoardDTO(int num, String author, String title, String content, 
 			int readcnt, int repRoot, int repStep, int repIndent) {
 		super();
 		this.num = num;
