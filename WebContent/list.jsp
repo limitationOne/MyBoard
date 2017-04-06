@@ -10,7 +10,7 @@
 <LINK rel="stylesheet" type="text/css" href="./css/list.css"/>
 </head>
 <body>
-	<DIV align="center">
+	<DIV style="text-align: center;">
 		<h1>게시판</h1>
 		<TABLE>
 			<THEAD>
@@ -20,22 +20,22 @@
 					<TH>작성자</TH>
 					<TH>작성일시</TH>
 					<TH>조회수</TH>
-					<TH>repRoot</TH>
-					<TH>repStep</TH>
-					<TH>repIndent</TH>
 				</TR>
 			</THEAD>
 			<TBODY>
 				<c:forEach items="${ list }" var="boardDTO">
 					<TR>
 						<TD><A href="retrieve.do?num=${ boardDTO.num }">${ boardDTO.num }</A></TD>
-						<TD><A href="retrieve.do?num=${ boardDTO.num }">${ boardDTO.title }</A></TD>
+						<TD style="text-align: left;">
+							<c:if test="${ boardDTO.repIndent != 0 }">
+								<c:forEach begin="2" end="${ boardDTO.repIndent - 1 }">&nbsp;&nbsp;</c:forEach>
+								<c:forEach begin="${ boardDTO.repIndent }" end="${ boardDTO.repIndent }"> ㄴ </c:forEach>
+							</c:if>
+							<A href="retrieve.do?num=${ boardDTO.num }">${ boardDTO.title }</A>
+						</TD>
 						<TD><A href="">${ boardDTO.author }</A></TD>
 						<TD>${ boardDTO.writeday }</TD>
 						<TD>${ boardDTO.readcnt }</TD>
-						<TD>${ boardDTO.repRoot }</TD>
-						<TD>${ boardDTO.repStep }</TD>
-						<TD>${ boardDTO.repIndent }</TD>
 					</TR>
 				</c:forEach>
 			</TBODY>
