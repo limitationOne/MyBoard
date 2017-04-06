@@ -1,7 +1,5 @@
 drop table myBoard;
 
-select * from myBoard;
-
 create table myBoard(
 	num number(4) primary key,		--index
 	author varchar2(20) not null,	--글쓴이
@@ -13,6 +11,8 @@ create table myBoard(
 	repStep number(4),				--댓글에 대한 순서 지정을 위한 컬럼
 	repIndent number(4)				--들여쓰기정보
 );
+
+select * from myBoard;
 
 insert into myBoard (num, author, title, content, readcnt, repRoot, repStep, repIndent) 
 				values(1, '이순신', '난중일기', '임진왜란 중 적은 일기', 0, 1, 0, 0);

@@ -64,8 +64,7 @@ public class BoardFrontController extends HttpServlet {
 			com = new BoardReplyCommand();
 		}
 
-		if (com != null)
-			af = com.execute(request, response);
+		if (com != null) af = com.execute(request, response);
 
 		if (af.isRedirect()) {
 			response.sendRedirect(af.getPath());

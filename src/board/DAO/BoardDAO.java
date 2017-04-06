@@ -318,6 +318,8 @@ public class BoardDAO {
 				+ "readcnt,repRoot,repStep,repIndent) "
 				+ "values (?,?,?,?, 0,?,?,?)";
 		
+		addRepStep(repRoot, repStep);
+		
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		
@@ -330,8 +332,8 @@ public class BoardDAO {
 			pstmt.setString(3, title);
 			pstmt.setString(4, content);
 			pstmt.setInt(5, repRoot);
-			pstmt.setInt(6, repStepNum(repRoot));
-			pstmt.setInt(7, repIndent+1);
+			pstmt.setInt(6, repStep + 1);
+			pstmt.setInt(7, repIndent + 1);
 			
 			pstmt.executeUpdate();
 			
@@ -344,8 +346,8 @@ public class BoardDAO {
 	}
 	
 	// 답글 순서
-	private int	repStepNum(int repRoot){
-		String sql = "select max(repStep) from myboard where repRoot=?";
+	private void addRepStep(int repRoot, int repStep){
+		String sql = "update myboard set repStep=repStep+1 where repRoot=? and ? < repStep";
 		
 		Connection conn = null;
 		PreparedStatement pstmt = null;
@@ -356,17 +358,15 @@ public class BoardDAO {
 			pstmt = conn.prepareStatement(sql);
 			
 			pstmt.setInt(1, repRoot);
+			pstmt.setInt(2, repStep);
 			
-			rs = pstmt.executeQuery();
-			
-			if(rs.next()) return rs.getInt(1) + 1;
+			pstmt.executeUpdate();
 			
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
 			closeAll(rs, null, pstmt, conn);
 		}
-		return -1;
 	}
 	
 	private int makeNum(){
