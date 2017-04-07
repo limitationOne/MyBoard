@@ -18,7 +18,7 @@ public class BoardSearchCommand implements BoardCommand {
 		String type = request.getParameter("searchType");
 		String value = request.getParameter("searchValue");
 		
-		request.setAttribute("list", BoardDAO.getDao().search(type, value));
+		request.setAttribute("to", BoardDAO.getDao().search(type, value));
 		
 		return new ActionForward(false, "list.jsp");
 	}

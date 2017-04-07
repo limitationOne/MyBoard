@@ -17,7 +17,7 @@
 			<INPUT name="repRoot" type="hidden" value="0"/><br/>
 			<INPUT type="submit" value="등록하기" />
 		</FORM>
-		<INPUT type="button" value="취소" onclick="location.href='list.do'" />
+		<INPUT type="button" value="취소" onclick="location.href='list.do?num=1'" />
 	</DIV>
 </body>
 </html>

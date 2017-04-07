@@ -11,6 +11,7 @@ import javax.naming.InitialContext;
 import javax.sql.DataSource;
 
 import board.DTO.BoardDTO;
+import board.pageTO.PageTO;
 
 public class BoardDAO {
 	private static BoardDAO dao = new BoardDAO();
@@ -25,13 +26,59 @@ public class BoardDAO {
 		}
 	}
 	
+	// 게시글 숫자
+	public int totalCount(){
+		int totalCount = -1;
+		
+		String sql = "select count(*) from myboard";
+		
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		
+		try {
+			conn = dataFactiory.getConnection();
+			pstmt = conn.prepareStatement(sql);
+			
+			rs = pstmt.executeQuery();
+			if(rs.next()) totalCount = rs.getInt(1);
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			closeAll(rs, null, pstmt, conn);
+		}
+		return totalCount;
+	}
+	
 	// 게시판
-	public ArrayList<BoardDTO> list(){
+	public PageTO list(int num){
 		System.out.println("list()");
 		
-		ArrayList<BoardDTO> list = new ArrayList<BoardDTO>();
-		String sql = "select num,title,author,writeday,readcnt,repRoot,repStep,repIndent "
-				+ "from (select * from myboard order by repRoot desc, repStep asc)";
+		PageTO to = new PageTO();
+		int lostEnd = totalCount() / to.getContentCount();
+		
+		if(totalCount() % to.getContentCount() != 0) lostEnd += 1;
+		
+		to.setPageNum(num);
+		if(num % 10 == 0) num -= 1;
+		
+		to.setFirstPage(num / 10 * 10 + 1);
+		to.setEndPage(num / 10 * 10 + 10);
+		
+		// 마지막 페이지 처리
+		if(to.getEndPage() > lostEnd) to.setEndPage(lostEnd);
+		
+		to.setTotalCount(totalCount() / to.getContentCount() + 1);
+		
+		if(totalCount()%to.getContentCount() == 0) to.setTotalCount(to.getTotalCount() - 1); 
+		
+		String sql = "select * from ("
+						+ "select myboard.*, rownum as rnum from ("
+						+ "select num,author,title,content,writeday,readcnt,repRoot,repStep,repIndent "
+						+ "from myboard order by repRoot desc, repStep asc) myboard	"
+						+ "where rownum<" + (num * to.getContentCount() + 1) + " ) "
+						+ "where " + (num * to.getContentCount() - to.getContentCount()) + "<rnum";
 		
 		Connection conn = null;
 		PreparedStatement pstmt = null;
@@ -44,7 +91,7 @@ public class BoardDAO {
 			rs = pstmt.executeQuery();
 			
 			while (rs.next()) {
-				list.add(new BoardDTO(rs.getInt("num"), 
+				to.getList().add(new BoardDTO(rs.getInt("num"), 
 						rs.getString("author"), 
 						rs.getString("title"), 
 						null,
@@ -59,7 +106,7 @@ public class BoardDAO {
 		} finally {
 			closeAll(rs, null, pstmt, conn);
 		}
-		return list;
+		return to;
 	}
 	
 	// 글쓰기
@@ -229,13 +276,13 @@ public class BoardDAO {
 	}
 	
 	// 검색
-	public ArrayList<BoardDTO> search(String type, String value) {
+	public PageTO search(String type, String value) {
 		if((value == null || "".equals(value) || type == null || "".equals(type)) 
 				|| !("title".equals(type) || "author".equals(type))) { 
-			return list();
+			return list(1);
 		}
-		ArrayList<BoardDTO> list = new ArrayList<BoardDTO>();
-		String sql = "select * from myboard where upper(" + type + ") like upper(?)";
+		String sql = "select * from myboard where upper(" + type + ") like upper(?) order by repRoot desc, repStep asc";
+		PageTO to = new PageTO();
 		
 		Connection conn = null;
 		PreparedStatement pstmt = null;
@@ -249,7 +296,7 @@ public class BoardDAO {
 			rs = pstmt.executeQuery();
 			
 			while (rs.next()) {
-				list.add(new BoardDTO(rs.getInt("num"), 
+				to.getList().add(new BoardDTO(rs.getInt("num"), 
 						rs.getString("author"), 
 						rs.getString("title"), 
 						rs.getString("content"), 
@@ -264,7 +311,7 @@ public class BoardDAO {
 		} finally {
 			closeAll(rs, null, pstmt, conn);
 		}
-		return list;
+		return to;
 	}
 	
 	// 답글 작성 UI

@@ -17,10 +17,17 @@ select * from myBoard;
 insert into myBoard (num, author, title, content, readcnt, repRoot, repStep, repIndent) 
 				values(1, '이순신', '난중일기', '임진왜란 중 적은 일기', 0, 1, 0, 0);
 
-
-
-
+--num, author, title, content, writeday, readcnt, repRoot, repStep, repIndent
+select * from (
+	select myboard.*, rownum as rnum from (
+		select num,author,title,content,writeday,readcnt,repRoot,repStep,repIndent 
+			from myboard order by repRoot desc, repStep asc) myboard
+		where rownum<11 ) 
+where 5<rnum
 
 --BoardDAO.list()
 select num,title,author,writeday,readcnt,repRoot,repStep,repIndent 
 		from (select * from myboard order by writeday desc);
+
+
+select count(*) from myboard;

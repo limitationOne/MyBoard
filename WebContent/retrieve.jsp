@@ -36,7 +36,7 @@
 					<TD colspan="2">${ dto.repIndent }</TD>
 				</TR>
 			</TABLE>
-			<INPUT type="button" value="목록" onclick="location.href='list.do'"/>
+			<INPUT type="button" value="목록" onclick="location.href='list.do?num=1'"/>
 			<INPUT type="button" value="수정" onclick="location.href='updateUI.do?num=${dto.num}'"/>
 			<INPUT type="button" value="삭제" onclick="location.href='delete.do?num=${dto.num}'"/>
 			<INPUT type="button" value="답글" onclick="location.href='replyUI.do?num=${dto.num}'"/>

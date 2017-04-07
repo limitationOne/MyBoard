@@ -1,6 +1,7 @@
 @CHARSET "UTF-8";
 
-table { box-shadow: 5px 5px 5px rgb(180, 180, 180) }
+body > div { text-align: center; }
+table { margin: auto; box-shadow: 5px 5px 5px rgb(180, 180, 180); }
 tr { outline: black solid 2px; }
 th, td { padding: 5px; text-align: center; }
 a { text-decoration: none; }

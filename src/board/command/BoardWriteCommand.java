@@ -20,6 +20,6 @@ public class BoardWriteCommand implements BoardCommand {
 				request.getParameter("title"), 
 				request.getParameter("content"));
 		
-		return new ActionForward(true, "list.do");
+		return new ActionForward(true, "list.do?num=1");
 	}
 }

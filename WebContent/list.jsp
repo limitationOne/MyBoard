@@ -10,7 +10,7 @@
 <LINK rel="stylesheet" type="text/css" href="./css/list.css"/>
 </head>
 <body>
-	<DIV style="text-align: center;">
+	<DIV>
 		<h1>게시판</h1>
 		<TABLE>
 			<THEAD>
@@ -23,7 +23,7 @@
 				</TR>
 			</THEAD>
 			<TBODY>
-				<c:forEach items="${ list }" var="boardDTO">
+				<c:forEach items="${ to.list }" var="boardDTO">
 					<TR>
 						<TD><A href="retrieve.do?num=${ boardDTO.num }">${ boardDTO.num }</A></TD>
 						<TD style="text-align: left;">
@@ -42,10 +42,41 @@
 		</TABLE>
 		<br/>
 		<DIV>
-			<INPUT type="button" value="전체" onclick="location.href='list.do'"/>
-			<INPUT type="button" onclick="location.href='write.jsp'" value="글쓰기"/>
-			<!-- <INPUT type="button" onclick="location.href='index.jsp'" value="메인화면"/> -->
+			<c:if test="${ to.pageNum > 1 }">
+				<INPUT type="button" value="&#60;&#60;" onclick="location.href='list.do?num=1'"/>
+				<c:if test="${ !(to.pageNum - 10 < 1) }">
+					<INPUT type="button" value="&#60;" onclick="location.href='list.do?num=${ to.pageNum - 10 }'"/>
+				</c:if>
+				<c:if test="${ to.pageNum - 10 < 1 }">
+					<INPUT type="button" value="&#60;" onclick="location.href='list.do?num=1'"/>
+				</c:if>
+			</c:if>
+			
+			<c:if test="${ to.firstPage != 0 && to.endPage != 0 }">
+				<c:forEach var="num" begin="${ to.firstPage }" end="${ to.endPage }">
+					<c:if test="${ to.pageNum != num }">
+						<INPUT type="button" value="${ num }" onclick="location.href='list.do?num=${ num }'"/>
+					</c:if>
+					<c:if test="${ to.pageNum == num }">
+						<INPUT type="button" value="${ num }" onclick="location.href='list.do?num=${ num }'" style="font-weight: bold;"/>
+					</c:if>
+				</c:forEach>
+			</c:if>
+			
+			<c:if test="${ to.pageNum != to.totalCount }">
+				<c:if test="${ to.pageNum + 10 > to.totalCount }">
+					<INPUT type="button" value="&#62;" onclick="location.href='list.do?num=${ to.totalCount }'"/>
+				</c:if>
+				<c:if test="${ to.pageNum + 10 <= to.totalCount }">
+					<INPUT type="button" value="&#62;" onclick="location.href='list.do?num=${ to.pageNum + 10 }'"/>
+				</c:if>
+				<INPUT type="button" value="&#62;&#62;" onclick="location.href='list.do?num=${ to.totalCount }'"/>
+			</c:if>
+		</DIV>
+		<BR />
+		<DIV>
 			<FORM action="search.do" method="post">
+				<INPUT type="button" onclick="location.href='write.jsp'" value="글쓰기"/>
 				<SELECT name="searchType">
 					<OPTION value="title">제목</OPTION>
 					<OPTION value="author">이름</OPTION>

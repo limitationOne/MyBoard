@@ -13,9 +13,11 @@ public class BoardListCommand implements BoardCommand{
 	@Override
 	public ActionForward execute(HttpServletRequest request, HttpServletResponse response)
 			throws IOException, ServletException {
-		System.out.println("BoardListCommand");
 		
-		request.setAttribute("list", BoardDAO.getDao().list());
+		String pageNum = request.getParameter("num");
+		
+		if(pageNum != null && !"".equals(pageNum))
+			request.setAttribute("to", BoardDAO.getDao().list( Integer.parseInt(pageNum)) );
 		
 		return new ActionForward(false, "list.jsp");
 	}
